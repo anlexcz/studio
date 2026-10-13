@@ -8,7 +8,7 @@ async function verify(count,height){
  }
  const ids={};const doc={getElementById:id=>ids[id]??=element(id),createElement:()=>element(Math.random()),querySelector:()=>element('window'),querySelectorAll:()=>[],fonts:{ready:Promise.resolve()},body:element('body')};
  const context={document:doc,window:{OUTRO_CONFIG:{creditsEndPauseMs:3500},location:{href:'https://example.org/outro/outro.html'}},URL,Date,console,setTimeout:(fn,ms)=>{jobs.push({fn,at:now+ms});},setInterval(){},fetch:async url=>({ok:true,json:async()=>({supporters:Array.from({length:count},(_,i)=>({name:'Person '+i,tier:'midibus'}))}),text:async()=>''})};
- vm.runInNewContext(fs.readFileSync('studio/outro/outro.js','utf8'),context);
+ vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname, '../outro/outro.js'),'utf8'),context);
  const flush=async()=>{await new Promise(setImmediate);};
  async function advance(ms){let target=now+ms;while(jobs.some(j=>j.at<=target)){jobs.sort((a,b)=>a.at-b.at);const job=jobs.shift();now=job.at;job.fn();await flush();}now=target;await flush();}
  await flush();await advance(7600);assert(scroll);assert.equal(scroll.frames[1].transform,`translateY(${-height-30}px)`);

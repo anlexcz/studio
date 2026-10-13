@@ -18,7 +18,7 @@ const assert = require('node:assert/strict');
       };
     });
     await page.goto('http://127.0.0.1:8765/outro/outro.html');
-    await page.waitForFunction(() => window.creditsAnimation, { timeout: 20000 });
+    await page.waitForFunction(() => window.creditsAnimation, null, { timeout: 20000 });
     await page.evaluate(() => {
       window.creditsAnimation.pause();
       window.creditsAnimation.currentTime = 16000;
@@ -39,7 +39,7 @@ const assert = require('node:assert/strict');
         trackHeight: document.querySelector('#supportersTrack').scrollHeight
       };
     });
-    assert.equal(layout.names, 46);
+    assert.equal(layout.names, JSON.parse(fs.readFileSync('_site/outro/supporters.json', 'utf8')).supporters.length);
     assert(layout.guests.bottom <= layout.cta.top, 'Guest and CTA panels overlap');
     assert(layout.cta.bottom <= 905, 'CTA collides with footer');
     assert(layout.credits.height > 400);
