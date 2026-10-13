@@ -68,8 +68,11 @@
     socialsList.innerHTML = "";
 
     (items || []).forEach(item => {
-      const row = document.createElement("div");
+      const row = document.createElement("a");
       row.className = "social-item";
+      row.href = item.href;
+      row.target = "_blank";
+      row.rel = "noopener noreferrer";
 
       const iconWrap = document.createElement("div");
       iconWrap.className = "social-icon-wrap";
@@ -266,6 +269,7 @@
   setText(forendorsTitle, cfg.forendorsTitle || "Forendors");
   setText(forendorsText, cfg.forendorsText || "Celý záznam vysílání a další plné díly podcastů");
   setText(forendorsLink, cfg.forendorsLink || "forendors.cz/metrobuscz");
+  forendorsLink.href = cfg.forendorsUrl || "https://forendors.cz/metrobuscz";
 
   setText(supportersTitle, cfg.supportersTitle || "Předplatitelé Metrobusu");
   setText(supportersThanks,(cfg.supportersThanks || "Všem děkujeme za podporu!"));

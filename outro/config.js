@@ -5,27 +5,26 @@ window.OUTRO_CONFIG = {
   guestsTitle: "V tomto díle vystoupili",
   guests: [
     "Jiří Trsek",
-    "Honza Škopek",
-    "Václav Novák"
+    "Honza Škopek"
   ],
 
-  socialsTitle: "Najdete nás i jinde",
+  socialsTitle: "Zůstaň na spoji.",
   socials: [
-    { icon: "web", label: "Web", value: "metrobus.cz" },
-    { icon: "youtube", label: "YouTube", value: "Metrobus" },
-    { icon: "instagram", label: "Instagram", value: "@metrobuscz" },
-    { icon: "mastodon", label: "Mastodon", value: "@MetrobusCZ" }
+    { icon: "web", label: "Web", value: "metrobus.cz", href: "https://www.metrobus.cz" },
+    { icon: "youtube", label: "YouTube", value: "Metrobus", href: "https://is.gd/metrobusyt" },
+    { icon: "instagram", label: "Instagram", value: "@metrobuscz", href: "https://www.instagram.com/metrobuscz/" }
   ],
 
-  ctaLeadTitle: "Pokračujte s Metrobusem",
+  ctaLeadTitle: "Tohle není konečná!",
   forendorsTitle: "Forendors",
-  forendorsText: "Celý záznam vysílání a další plné díly podcastů",
+  forendorsText: "Celý Pokec bez střihů a další díly na Forendors.",
   forendorsLink: "forendors.cz/metrobuscz",
+  forendorsUrl: "https://forendors.cz/metrobuscz",
 
   supportersTitle: "Předplatitelé Metrobusu",
   supportersThanks: "Všem děkujeme za podporu!",
 
-  footer: "Vyrobil Metrobus v roce 2026 ve svém studiu",
+  footer: "Vyrobil Metrobus ve svém studiu · 2026",
   easterEgg: "",
 
   supportersJson: "supporters.json",
