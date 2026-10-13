@@ -1,5 +1,11 @@
 # Metrobus studio
 
+Nová společná režie: https://anlexcz.github.io/studio/control/
+
+Čtyři samostatné overlaye a profily. Web nabízí lokální náhled; skutečné
+ovládání OBS zajišťuje přiložený Node server. [Návod první verze](STUDIO.md).
+
+
 Nastavení outra: https://anlexcz.github.io/studio/outro/
 Zdroj do OBS: https://anlexcz.github.io/studio/outro/outro.html
 

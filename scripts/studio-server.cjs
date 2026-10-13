@@ -1,0 +1,26 @@
+/* Dependency-free, loopback-only server for browser panel + OBS. */
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
+const Model=require('../shared/model.js');const root=path.resolve(__dirname,'..'),dataDir=process.env.STUDIO_DATA_DIR||path.join(root,'.studio-data'),dataFile=path.join(dataDir,'state.json');
+let state=Model.initial();try{const saved=JSON.parse(fs.readFileSync(dataFile,'utf8'));if(saved.version===1&&Array.isArray(saved.profiles))state=saved;}catch{}
+const peers=new Set();function persist(){fs.mkdirSync(dataDir,{recursive:true});fs.writeFileSync(dataFile+'.tmp',JSON.stringify(state));fs.renameSync(dataFile+'.tmp',dataFile);}
+function emit(){for(const res of peers)res.write('data: '+JSON.stringify(state)+'\n\n');}
+function json(res,status,data){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(data));}
+function csvRows(raw){const rows=[];let row=[],cell='',quote=false;for(let i=0;i<raw.length;i++){const c=raw[i];if(c==='"'){if(quote&&raw[i+1]==='"'){cell+='"';i++;}else quote=!quote;}else if(c===','&&!quote){row.push(cell);cell='';}else if(c==='\n'&&!quote){row.push(cell.replace(/\r$/,''));rows.push(row);row=[];cell='';}else cell+=c;}if(cell||row.length){row.push(cell.replace(/\r$/,''));rows.push(row);}return rows;}
+function supporters(){const files=fs.readdirSync(path.join(root,'outro')).filter(n=>/^podporovatele-metrobuscz-\d{4}-\d{2}-\d{2}\.csv$/.test(n)).sort();if(!files.length)throw Error('Chybí export podporovatelů');const source=files.at(-1),rows=csvRows(fs.readFileSync(path.join(root,'outro',source),'utf8').replace(/^\uFEFF/,'')),head=rows.shift();const index=n=>head.indexOf(n);if(['Jméno','Handle','Předplatné'].some(n=>index(n)<0))throw Error('Neplatný export');return {source,date:source.match(/\d{4}-\d{2}-\d{2}/)[0],supporters:rows.filter(r=>r.some(Boolean)).map(r=>({name:r[index('Jméno')]?.trim()||r[index('Handle')]?.trim(),tier:r[index('Předplatné')]?.trim().toLowerCase()})).sort((a,b)=>(a.tier!=='standard')-(b.tier!=='standard'))};}
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.png':'image/png','.webp':'image/webp','.md':'text/plain; charset=utf-8','.csv':'text/plain; charset=utf-8'};
+const port=Number(process.env.STUDIO_PORT)||8787;
+const server=http.createServer(async(req,res)=>{try{
+ const host=req.headers.host;if(!host||!['127.0.0.1:'+port,'localhost:'+port].includes(host)){json(res,403,{error:'Neplatný host'});return;}
+ const url=new URL(req.url,'http://'+host);if(req.method==='POST'&&req.headers.origin!=='http://'+host){json(res,403,{error:'Změny jsou povolené jen z místní režie.'});return;}
+ if(url.pathname==='/api/state'&&req.method==='GET'){json(res,200,state);return;}
+ if(url.pathname==='/api/events'&&req.method==='GET'){res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache','Connection':'keep-alive'});peers.add(res);res.write('data: '+JSON.stringify(state)+'\n\n');req.on('close',()=>peers.delete(res));return;}
+ if(url.pathname==='/api/action'&&req.method==='POST'){if(req.headers['content-type']?.split(';')[0]!=='application/json'){json(res,415,{error:'Použij JSON'});return;}let bytes=0,chunks=[];for await(const chunk of req){bytes+=chunk.length;if(bytes>20000){json(res,413,{error:'Příliš velká změna'});return;}chunks.push(chunk);}try{const next=Model.reduce(state,JSON.parse(Buffer.concat(chunks).toString()));const previous=state;state=next;try{persist();}catch(e){state=previous;throw e;}emit();json(res,200,state);}catch(e){json(res,400,{error:e.message});}return;}
+ if(req.method!=='GET'&&req.method!=='HEAD'){json(res,405,{error:'Nepodporovaná metoda'});return;}
+ if(url.pathname==='/outro/supporters.json'){json(res,200,supporters());return;}
+ let relative=decodeURIComponent(url.pathname).replace(/^\/+/, '');if(!relative||relative.endsWith('/'))relative+='index.html';
+ if(relative.split('/').some(segment=>segment.startsWith('.'))||relative.startsWith('scripts/')||relative.endsWith('.csv')&&!relative.endsWith('easteregg.csv')){json(res,404,{error:'Nenalezeno'});return;}
+ const filename=path.resolve(root,relative);if(!filename.startsWith(root+path.sep)){json(res,403,{error:'Zakázáno'});return;}if(!fs.existsSync(filename)||!fs.statSync(filename).isFile()){json(res,404,{error:'Nenalezeno'});return;}
+ res.writeHead(200,{'Content-Type':mime[path.extname(filename)]||'application/octet-stream','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});if(req.method==='HEAD')res.end();else fs.createReadStream(filename).pipe(res);
+ }catch(e){json(res,500,{error:'Nepodařilo se načíst zdroj'});}});
+setInterval(()=>{if(Model.tick(state)){state.revision++;persist();emit();}},250);setInterval(()=>{for(const res of peers)res.write(': heartbeat\n\n');},15000);
+server.on('error',e=>{console.error('Studio nelze spustit:',e.message);process.exit(1);});server.listen(port,'127.0.0.1',()=>console.log(`Metrobus Studio: http://127.0.0.1:${port}/control/\nNech toto okno otevřené během vysílání. Ukončení: Ctrl+C.`));

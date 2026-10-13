@@ -10,6 +10,12 @@
     cfg = { ...cfg, ...OutroData.validate(await response.json()) };
   }
 
+  if (params.get("studio") === "1") {
+    await Studio.ready;
+    const live = Studio.state.outro.settings || Studio.state.config.outro;
+    cfg = { ...cfg, titleBottom: live.titleBottom, guests: live.guests.split("\n").map(s => s.trim()).filter(Boolean) };
+  }
+
   const app = document.getElementById("app");
 
   const titleTop = document.getElementById("titleTop");

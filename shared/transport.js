@@ -1,0 +1,10 @@
+(function(){'use strict';const key='metrobus-studio-v1',listeners=new Set();let s=StudioModel.initial(),remote=false,busy=Promise.resolve();const saved=()=>{try{const v=JSON.parse(localStorage.getItem(key));return v?.version===1&&Array.isArray(v.profiles)?v:StudioModel.initial();}catch{return StudioModel.initial();}};
+ function notify(){listeners.forEach(fn=>fn(s));}
+ function localSave(){localStorage.setItem(key,JSON.stringify(s));notify();}
+ async function initialize(){try{const r=await fetch(new URL('../api/state',document.currentScript?.src||new URL('shared/transport.js',location.href)),{cache:'no-store'});if(r.ok&&r.headers.get('content-type')?.includes('application/json')){s=await r.json();remote=true;const stream=new EventSource(new URL('../api/events',scriptURL));stream.onmessage=e=>{s=JSON.parse(e.data);notify();};stream.onerror=()=>{document.dispatchEvent(new CustomEvent('studio-connection',{detail:'Server se znovu připojuje…'}));};stream.onopen=()=>document.dispatchEvent(new CustomEvent('studio-connection',{detail:'Propojeno s OBS · lokální server'}));}}catch{}if(!remote)s=saved();notify();return s;}
+ const scriptURL=document.currentScript.src;
+ const ready=initialize();
+ window.addEventListener('storage',e=>{if(!remote&&e.key===key){s=saved();notify();}});
+ setInterval(()=>{if(!remote&&StudioModel.tick(s)){try{localSave();}catch{notify();}}},250);
+ window.Studio={ready,get state(){return s;},get remote(){return remote;},subscribe(fn){listeners.add(fn);fn(s);return()=>listeners.delete(fn);},dispatch(action){const job=busy.then(async()=>{await ready;if(remote){const r=await fetch(new URL('../api/action',scriptURL),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(action)});if(!r.ok)throw Error((await r.json()).error||'Server odmítl změnu');s=await r.json();notify();}else{s=StudioModel.reduce(saved(),action);localSave();}return s;});busy=job.catch(()=>{});return job;}};
+})();
