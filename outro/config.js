@@ -21,8 +21,9 @@ window.OUTRO_CONFIG = {
   forendorsLink: "forendors.cz/metrobuscz",
   forendorsUrl: "https://forendors.cz/metrobuscz",
 
-  supportersTitle: "Předplatitelé Metrobusu",
-  supportersThanks: "Všem děkujeme za podporu!",
+  supportersTitle: "Díky vám jedeme dál.",
+  supportersSubtitle: "Podporovatelé Metrobusu na Forendors",
+  supportersThanks: "Děkujeme za vaši podporu.",
 
   footer: "Vyrobil Metrobus ve svém studiu · 2026",
   easterEgg: "",

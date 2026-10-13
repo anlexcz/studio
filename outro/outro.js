@@ -17,6 +17,7 @@
   const forendorsLink = document.getElementById("forendorsLink");
 
   const supportersTitle = document.getElementById("supportersTitle");
+  const supportersSubtitle = document.getElementById("supportersSubtitle");
   const supportersTrack = document.getElementById("supportersTrack");
   const supportersThanks = document.getElementById("supportersThanks");
 
@@ -271,8 +272,9 @@
   setText(forendorsLink, cfg.forendorsLink || "forendors.cz/metrobuscz");
   forendorsLink.href = cfg.forendorsUrl || "https://forendors.cz/metrobuscz";
 
-  setText(supportersTitle, cfg.supportersTitle || "Předplatitelé Metrobusu");
-  setText(supportersThanks,(cfg.supportersThanks || "Všem děkujeme za podporu!"));
+  setText(supportersTitle, cfg.supportersTitle || "Díky vám jedeme dál.");
+  setText(supportersSubtitle, cfg.supportersSubtitle || "Podporovatelé Metrobusu na Forendors");
+  setText(supportersThanks,(cfg.supportersThanks || "Děkujeme za vaši podporu."));
   setText(footer, cfg.footer || "Metrobus · 2026");
 
   const supporters = await loadSupporters(cfg.supportersJson || "supporters.json");
