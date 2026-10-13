@@ -299,6 +299,7 @@
     guestsList.style.fontSize = `${--guestSize}px`;
   }
   if (params.get("still") === "1") {
+    app.style.transition = "none";
     app.classList.remove("hidden");
     document.querySelectorAll(".anim").forEach(el => {
       el.style.animationDelay = "0s";

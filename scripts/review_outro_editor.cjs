@@ -44,7 +44,7 @@ const original=JSON.parse(fs.readFileSync('outro/settings.json','utf8'));
   assert.equal(await page.locator('#github-token').inputValue(),'');
   assert.equal(savedRows.length,2);assert.equal(savedSettings.guests[0],'Anlex');assert(savedSettings.easterEggs.includes('Tohle je testovací hláška.'));
   assert(!await page.evaluate(()=>localStorage.getItem(OutroData.draftKey).includes('TEST_ONLY')));
-  fs.mkdirSync('review',{recursive:true});await page.screenshot({path:'review/outro-settings-desktop.png',fullPage:true});
+  fs.mkdirSync('review',{recursive:true});await page.evaluate(()=>scrollTo(0,0));await page.waitForFunction(()=>{const doc=document.querySelector('#preview').contentDocument;const panel=doc?.querySelector('.right-column');return panel&&Number(doc.defaultView.getComputedStyle(panel).opacity)>.99&&Number(doc.defaultView.getComputedStyle(doc.querySelector('#app')).opacity)>.99;});await page.screenshot({path:'review/outro-settings-desktop.png',fullPage:true});
   // A fresh browser profile (like OBS) sees the published settings, not local storage.
   const fresh=await browser.newContext({viewport:{width:1920,height:1080}});
   await fresh.route('**/outro/settings.json*',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(savedSettings)}));
