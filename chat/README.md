@@ -1,10 +1,7 @@
-# Chat studio — statické demo
+# Metrobus chat — demo
 
-- Ovládání: `/studio/chat/`
-- Průhledný overlay: `/studio/chat/overlay/`
-- Samostatné automatické demo pro OBS: `/studio/chat/overlay/?demo=1`
-- OBS rozměry: 1920 × 1080.
+Tři vrstvy: běžící chat, ručně zvýrazněný komentář a fronta popupů pro Super Chat/členství. Původní CSS, grafické tokeny a animační funkce z dodaného overlaye; odstraněna promo vrstva a původní serverový transport. Ovládání neobsahuje promo, exporty, hvězdičky ani evidenci vyřízení.
 
-Zprávy jsou smyšlené. Žádné YouTube API ani přihlášení. Náhled používá postMessage s kontrolou originu a zdroje. Samostatná okna stejného browser profilu synchronizuje localStorage/storage event. OBS a mobil nesdílí storage — plné dálkové ovládání vyžaduje backend. Demo v OBS běží samostatně a nesleduje panel.
+Panel `/studio/chat/`, overlay `/studio/chat/overlay/`, samostatné OBS demo `/studio/chat/overlay/?demo=1` (1920 × 1080). Testovací data bez YouTube API. Náhled se řídí přes postMessage; další okna stejného browser profilu přes storage event. OBS/mobil má oddělené prostředí, propojení vyžaduje backend.
 
-Frontend bez build závislostí. core.js: datový kontrakt, validace, vykreslení; panel.js: ovládání a lokální transport; overlay/overlay.js: plátno a demo. Budoucí síťový transport má nahradit lokální synchronizaci. Export obsahuje pouze nastavení, nikoli zprávy či tokeny.
+core.js: omezená historie a popup fronta, validace, časování, adaptér dat na původní renderer. renderer.js: původní animace a layout; overlay.js: lokální demo transport. Nastavení obsahuje jen počet zpráv a doby zobrazení.
