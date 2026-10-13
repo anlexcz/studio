@@ -10,7 +10,7 @@ body { position:relative; }
 .brand-stripe { position:absolute; top:132px; left:0; width:1920px; height:48px; background:var(--accent); clip-path:polygon(0 85%,100% 0,100% 13%,0 100%); z-index:-2; }
 .brand-watermark { position:absolute; top:0; left:26px; width:610px; height:174px; background:#fff; opacity:.09; mask:url("assets/metrobus_mark.png") 50% 50% / 215% 550% no-repeat; -webkit-mask:url("assets/metrobus_mark.png") 50% 50% / 215% 550% no-repeat; clip-path:polygon(0 0,100% 0,100% 92%,0 100%); pointer-events:none; }
 .footer-ribbon { position:absolute; left:0; right:0; top:840px; height:190px; background:var(--accent); clip-path:polygon(0 53%,100% 0,100% 100%); z-index:-2; }
-.footer-logo { position:absolute; left:63px; top:826px; width:236px; height:238px; z-index:2; filter:drop-shadow(0 -7px 10px rgba(0,0,0,.22)); }
+.footer-logo { position:absolute; left:63px; top:826px; width:236px; height:238px; z-index:2; filter:drop-shadow(0 -3px 4px rgba(0,0,0,.14)); }
 .footer-logo::before,.footer-logo::after { content:""; position:absolute; inset:0; }
 .footer-logo::before { background:var(--ink); mask:url("assets/metrobus_badge.png") center / 145% 145% no-repeat; -webkit-mask:url("assets/metrobus_badge.png") center / 145% 145% no-repeat; }
 .footer-logo::after { background:var(--accent); mask:url("assets/metrobus_mark.png") center / 145% 145% no-repeat; -webkit-mask:url("assets/metrobus_mark.png") center / 145% 145% no-repeat; }
