@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1920,height=1080,initial-scale=1" />
+  <title>Metrobus Outro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="outro.css" />
+  <script src="config.js"></script>
+</head>
+<body>
+  <div id="app" class="app hidden">
+
+    <div class="bg-dim"></div>
+
+    <div class="layout">
+
+      <section class="left-column">
+        <div class="title-block anim anim-1">
+          <div class="title-row">
+            <img class="title-logo" src="assets/metrobus_logo.png" alt="Metrobus logo" />
+            <div class="title-texts">
+              <div id="titleTop" class="title-top">METROBUS</div>
+              <div id="titleBottom" class="title-bottom">Pokec</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guests-block anim anim-2">
+          <div id="guestsTitle" class="section-title">V tomto díle vystoupili</div>
+          <div id="guestsList" class="guests-list"></div>
+        </div>
+
+        <div class="cta-block anim anim-3">
+
+          <div id="ctaLeadTitle" class="section-title cta-lead-title">Pro předplatitele</div>
+          <div class="forendors-card">
+            <div id="forendorsTitle" class="forendors-title">Forendors</div>
+            <div id="forendorsText" class="forendors-text">Celý záznam vysílání a další plné díly podcastů</div>
+            <div id="forendorsLink" class="forendors-link">forendors.cz/metrobuscz</div>
+          </div>
+        
+          <div id="socialsTitle" class="section-title cta-subtitle">Najdete nás i jinde</div>
+          <div id="socialsList" class="socials-list"></div>
+        </div>
+      </section>
+
+      <aside class="right-column anim anim-4">
+        <div id="supportersTitle" class="section-title">Předplatitelé Metrobusu</div>
+
+        <div class="supporters-window">
+          <div id="supportersTrack" class="supporters-track"></div>
+        </div>
+
+        <div id="supportersThanks" class="supporters-thanks">Všem děkujeme za podporu!</div>
+      </aside>
+
+    </div>
+
+    <div class="bottom-bar">
+      <div id="footer" class="footer">Metrobus · 2026</div>
+      <div id="easterEgg" class="easter-egg"></div>
+    </div>
+
+  </div>
+
+  <script src="outro.js"></script>
+</body>
+</html>
