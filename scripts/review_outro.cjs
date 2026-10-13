@@ -117,6 +117,27 @@ const assert = require('node:assert/strict');
     await page.clock.runFor(1);
     assert.equal(await page.locator('#app').evaluate(e => e.classList.contains('fade-out')), true);
     assert.deepEqual(errors, []);
+    assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundImage), 'none');
+    assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('#app'), '::after').clipPath), 'none');
+    const preview = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+    await preview.goto('http://127.0.0.1:8765/outro/outro.html?preview=photo');
+    await preview.waitForFunction(() => document.querySelector('#supportersTrack').getAnimations().length > 0);
+    await preview.evaluate(() => {
+      const scroll = document.querySelector('#supportersTrack').getAnimations()[0];
+      scroll.pause(); scroll.currentTime = 16000;
+    });
+    await preview.waitForFunction(() => document.querySelector('#easterEgg').classList.contains('is-visible'));
+    await preview.waitForTimeout(450);
+    assert(await preview.evaluate(() => getComputedStyle(document.body).backgroundImage.includes('preview-photo.webp')));
+    const footerAlignment = await preview.evaluate(() => {
+      const a = document.querySelector('#footer').getBoundingClientRect();
+      const b = document.querySelector('#easterEgg').getBoundingClientRect();
+      return { delta: Math.abs((a.top + a.bottom) / 2 - (b.top + b.bottom) / 2), gap: b.left - a.right };
+    });
+    assert(footerAlignment.delta < 1, 'Footer text blocks are not aligned');
+    assert(footerAlignment.gap >= 16, 'Footer text blocks overlap');
+    await preview.screenshot({ path: 'review/outro-photo-preview.png' });
+    await preview.close();
     console.log(JSON.stringify(layout, null, 2));
   } finally {
     await browser.close();

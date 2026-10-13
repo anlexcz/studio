@@ -10,6 +10,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="outro.css" />
+  <script>
+    if (new URLSearchParams(window.location.search).get("preview") === "photo") {
+      document.documentElement.dataset.preview = "photo";
+    }
+  </script>
   <script src="config.js"></script>
 </head>
 <body>
@@ -18,7 +23,6 @@
     <div class="bg-dim"></div>
     <div class="brand-stripe" aria-hidden="true"></div>
     <div class="brand-watermark" aria-hidden="true"></div>
-    <div class="footer-ribbon" aria-hidden="true"></div>
     <div class="footer-logo" role="img" aria-label="Metrobus logo"></div>
 
     <div class="layout">
