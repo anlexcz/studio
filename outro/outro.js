@@ -224,37 +224,34 @@
     }, 2000);
   }
 
-  function startSupportersScroll() {
-    const startAtMs = 7600;
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-    setTimeout(() => {
-      const windowEl = document.querySelector(".supporters-window");
-      const contentHeight = supportersTrack.scrollHeight;
-      const windowHeight = windowEl.clientHeight;
+  async function startSupportersScroll() {
+    // Wait until the supporters panel has finished its entrance animation.
+    await delay(7600);
+    const windowEl = document.querySelector(".supporters-window");
+    const contentHeight = supportersTrack.scrollHeight;
+    const startY = windowEl.clientHeight + 30;
+    // An extra margin lets the very last wrapped name leave the mask fully.
+    const endY = -contentHeight - 30;
+    const configuredSpeed = Number(cfg.supportersSpeedPxPerSec);
+    const speed = configuredSpeed > 0 && Number.isFinite(configuredSpeed)
+      ? configuredSpeed : 42;
+    const durationMs = ((startY - endY) / speed) * 1000;
 
-      const startY = windowHeight + 30;
-      const endY = -contentHeight;
+    supportersTrack.style.opacity = "1";
+    const scroll = supportersTrack.animate([
+      { transform: `translateY(${startY}px)` },
+      { transform: `translateY(${endY}px)` }
+    ], { duration: durationMs, easing: "linear", fill: "forwards" });
 
-      supportersTrack.style.transition = "none";
-      supportersTrack.style.opacity = "0";
-      supportersTrack.style.transform = `translateY(${startY}px)`;
-
-      supportersTrack.offsetHeight;
-
-      const speedPxPerSec = 42;
-      const distance = startY - endY;
-      const durationMs = (distance / speedPxPerSec) * 1000;
-
-      supportersTrack.style.opacity = "1";
-      supportersTrack.style.transition = `transform ${durationMs}ms linear`;
-      supportersTrack.style.transform = `translateY(${endY}px)`;
-    }, startAtMs);
-  }
-
-  function startFadeOut() {
-    setTimeout(() => {
-      app.classList.add("fade-out");
-    }, 57000);
+    // Await actual playback completion instead of a fixed outro deadline.
+    await scroll.finished;
+    supportersThanks.classList.add("credits-complete");
+    const configuredPause = Number(cfg.creditsEndPauseMs);
+    await delay(Number.isFinite(configuredPause) && configuredPause >= 0
+      ? configuredPause : 3500);
+    app.classList.add("fade-out");
   }
 
   setText(titleTop, cfg.titleTop || "METROBUS");
@@ -279,14 +276,15 @@
 
   const easterEggItems = await loadSimpleLines(cfg.easterEggCsv || "easteregg.csv");
 
+  // Loaded fonts may change line wrapping and the total credits height.
+  await document.fonts.ready;
   startAnimations();
-  startSupportersScroll();
 
   setTimeout(() => {
     startEasterEggRotation(easterEggItems);
   }, cfg.easterEggStartDelayMs ?? 9000);
 
-  startFadeOut();
+  await startSupportersScroll();
 })().catch(err => {
   console.error("Outro initialization failed:", err);
   const notice = document.createElement("div");

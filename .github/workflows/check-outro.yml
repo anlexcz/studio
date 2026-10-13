@@ -1,0 +1,28 @@
+name: Check outro
+on:
+  push:
+    branches: [main]
+    paths: ['outro/**', 'scripts/*outro*', '.github/workflows/check-outro.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/build_site.py
+      - run: node scripts/check_outro_timing.cjs
+      - name: Install browser for layout check
+        run: |
+          npm install --prefix "$RUNNER_TEMP/outro-review" playwright@1.62.1
+          "$RUNNER_TEMP/outro-review/node_modules/.bin/playwright" install chromium --with-deps
+      - name: Verify layout and actual animation completion
+        env:
+          NODE_PATH: ${{ runner.temp }}/outro-review/node_modules
+        run: node scripts/review_outro.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: outro-review
+          path: review/

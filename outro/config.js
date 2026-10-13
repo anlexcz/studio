@@ -32,5 +32,9 @@ window.OUTRO_CONFIG = {
 
   easterEggCsv: "easteregg.csv",
   easterEggRotateMs: 15000,
-  easterEggStartDelayMs: 9000
+  easterEggStartDelayMs: 9000,
+
+  // Rychlost zůstává stejná i při změně délky seznamu.
+  supportersSpeedPxPerSec: 42,
+  creditsEndPauseMs: 3500
 };
