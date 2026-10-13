@@ -5,8 +5,8 @@
 https://anlexcz.github.io/studio/control/
 
 Čtyři samostatné moduly: Diváci (chat, featured, příspěvky/členství), Info
-(jmenovky a oznámení), Outro, Odpočet/pauza. Jeden panel, oddělené rozbalovací
-sekce nastavení. Původní editor outra a chat demo zůstávají dostupné.
+(jmenovky a oznámení), Outro, Odpočet/pauza. Hlavní režie obsahuje chat, malý náhled a rychlé ovládání. Příprava je
+v sekcích jednotlivých modulů; profily a adresy OBS jsou v Nastavení studia. Původní editor outra a chat demo zůstávají dostupné.
 
 Na GitHub Pages se stav ukládá pouze v prohlížeči. Náhled i další okna stejného
 browser profilu se synchronizují. GitHub Pages nepropojí tento stav s OBS,
@@ -31,8 +31,11 @@ počítači a neposkytuje vzdálený přístup. Stav a profily ukládá do `.stu
 
 ## Běžné ovládání
 
-- Texty jsou rozpracované do kliknutí na Zobrazit / Spustit. Nastavení ukládej
-  samostatně, pro uchování v profilu klikni Uložit do vybraného profilu.
+- Texty připrav v příslušné sekci a klikni Uložit přípravu. Z hlavní režie
+  odešleš uloženou přípravu tlačítkem Zobrazit / Spustit. V sekci modulu
+  lze aktuální návrh zobrazit rovnou. Zápis v poli sám nemění živý obraz.
+- Profil ukládá pouze uloženou přípravu; před uložením profilu ulož změny
+  v jednotlivých modulech.
 - Použít profil načte jeho nastavení. Živé texty se změní až dalším Zobrazit.
 - Příspěvky a členství se řadí do fronty. Historie má limit 200 zpráv a fronta 30.
 - Při featured komentáři se jmenovky přesunou nad něj; chat zůstává vpravo.
