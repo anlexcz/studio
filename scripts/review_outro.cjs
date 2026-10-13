@@ -47,11 +47,15 @@ const assert = require('node:assert/strict');
     assert.equal(layout.bottom, `translateY(${-layout.trackHeight - 30}px)`);
     fs.mkdirSync('review', { recursive: true });
     await page.screenshot({ path: 'review/outro.png', omitBackground: true });
-    await page.clock.install();
+    await page.clock.install({ time: new Date('2026-10-13T00:00:00Z') });
+    await page.clock.pauseAt(new Date('2026-10-13T00:00:01Z'));
     await page.clock.fastForward(120000);
     assert.equal(await page.locator('#app').evaluate(e => e.classList.contains('fade-out')), false);
-    await page.evaluate(() => window.creditsAnimation.finish());
-    await page.waitForFunction(() => document.querySelector('#supportersThanks').classList.contains('credits-complete'));
+    await page.evaluate(async () => {
+      window.creditsAnimation.finish();
+      await window.creditsAnimation.finished;
+    });
+    assert.equal(await page.locator('#supportersThanks').evaluate(e => e.classList.contains('credits-complete')), true);
     await page.clock.runFor(3499);
     assert.equal(await page.locator('#app').evaluate(e => e.classList.contains('fade-out')), false);
     await page.clock.runFor(1);
