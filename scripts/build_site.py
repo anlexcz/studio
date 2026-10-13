@@ -54,6 +54,10 @@ def build(root=ROOT):
     shutil.copy2(root / 'outro/easteregg.csv', output / 'outro/easteregg.csv')
     (output / 'outro/supporters.json').write_text(
         json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    # Chat demo is static and contains no provider credentials or runtime data.
+    if (root / 'chat').is_dir():
+        shutil.copytree(root / 'chat', output / 'chat',
+                        ignore=shutil.ignore_patterns('README.md'))
     (output / '.nojekyll').touch()
     print(f"Built {data['source']}: {len(data['supporters'])} supporters")
     return data
