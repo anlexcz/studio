@@ -1,5 +1,14 @@
 (async function () {
-  const cfg = window.OUTRO_CONFIG || {};
+  let cfg = window.OUTRO_CONFIG || {};
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("draft") === "1") {
+    const draft = JSON.parse(localStorage.getItem(OutroData.draftKey) || "null");
+    if (draft) cfg = { ...cfg, ...draft.settings, draftSupporters: draft.supporters };
+  } else {
+    const response = await fetch("settings.json?v=" + Date.now(), { cache: "no-store" });
+    if (!response.ok) throw new Error("Settings: HTTP " + response.status);
+    cfg = { ...cfg, ...OutroData.validate(await response.json()) };
+  }
 
   const app = document.getElementById("app");
 
@@ -31,6 +40,8 @@
 
   function renderGuests(list) {
     guestsList.innerHTML = "";
+    guestsList.className = "guests-list" + (list.length > 4 ? " two-columns" : "");
+    document.querySelector(".guests-block").style.display = list.length ? "" : "none";
     (list || []).forEach(name => {
       const div = document.createElement("div");
       div.textContent = name;
@@ -68,12 +79,10 @@
   function renderSocials(items) {
     socialsList.innerHTML = "";
 
-    (items || []).forEach(item => {
-      const row = document.createElement("a");
-      row.className = "social-item";
-      row.href = item.href;
-      row.target = "_blank";
-      row.rel = "noopener noreferrer";
+    (items || []).forEach((item, index) => {
+      const row = document.createElement("div");
+      row.className = "social-item anim";
+      row.style.animationDelay = `${3.8 + index * 0.15}s`;
 
       const iconWrap = document.createElement("div");
       iconWrap.className = "social-icon-wrap";
@@ -270,20 +279,40 @@
   setText(forendorsTitle, cfg.forendorsTitle || "Forendors");
   setText(forendorsText, cfg.forendorsText || "Celý záznam vysílání a další plné díly podcastů");
   setText(forendorsLink, cfg.forendorsLink || "forendors.cz/metrobuscz");
-  forendorsLink.href = cfg.forendorsUrl || "https://forendors.cz/metrobuscz";
 
   setText(supportersTitle, cfg.supportersTitle || "Díky vám jedeme dál.");
   setText(supportersSubtitle, cfg.supportersSubtitle || "Podporovatelé Metrobusu na Forendors");
   setText(supportersThanks,(cfg.supportersThanks || "Děkujeme za vaši podporu."));
   setText(footer, cfg.footer || "Metrobus · 2026");
 
-  const supporters = await loadSupporters(cfg.supportersJson || "supporters.json");
+  const supporters = cfg.draftSupporters || await loadSupporters(cfg.supportersJson || "supporters.json");
   renderSupporters(supporters);
 
-  const easterEggItems = await loadSimpleLines(cfg.easterEggCsv || "easteregg.csv");
+  const easterEggItems = cfg.easterEggs ?? await loadSimpleLines(cfg.easterEggCsv || "easteregg.csv");
 
   // Loaded fonts may change line wrapping and the total credits height.
   await document.fonts.ready;
+  const guestsBox = document.querySelector(".guests-block");
+  const available = document.querySelector(".left-column").clientHeight - document.querySelector(".cta-block").offsetHeight - 28;
+  let guestSize = 32;
+  while (guestsBox.offsetHeight > available && guestSize > 24) {
+    guestsList.style.fontSize = `${--guestSize}px`;
+  }
+  if (params.get("still") === "1") {
+    app.classList.remove("hidden");
+    document.querySelectorAll(".anim").forEach(el => {
+      el.style.animationDelay = "0s";
+      el.style.animationDuration = "1ms";
+      el.classList.add("play");
+    });
+    supportersTrack.style.opacity = "1";
+    supportersTrack.style.transform = "translateY(0)";
+    if (easterEggItems.length) {
+      easterEgg.textContent = easterEggItems[0];
+      easterEgg.classList.add("is-visible");
+    }
+    return;
+  }
   startAnimations();
 
   setTimeout(() => {

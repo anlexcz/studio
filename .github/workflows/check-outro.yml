@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: python3 scripts/build_site.py
       - run: node scripts/check_outro_timing.cjs
+      - run: node scripts/check_outro_data.cjs
       - name: Install browser for layout check
         run: |
           npm install --prefix "$RUNNER_TEMP/outro-review" playwright@1.62.1
@@ -20,7 +21,9 @@ jobs:
       - name: Verify layout and actual animation completion
         env:
           NODE_PATH: ${{ runner.temp }}/outro-review/node_modules
-        run: node scripts/review_outro.cjs
+        run: |
+          node scripts/review_outro.cjs
+          node scripts/review_outro_editor.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

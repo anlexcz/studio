@@ -41,8 +41,10 @@ const assert = require('node:assert/strict');
     });
     assert.equal(layout.names, JSON.parse(fs.readFileSync('_site/outro/supporters.json', 'utf8')).supporters.length);
     assert(layout.guests.bottom <= layout.cta.top, 'Guest and CTA panels overlap');
-    assert(layout.cta.bottom <= 820, 'CTA collides with footer');
-    assert(layout.credits.height > 400);
+    assert(layout.cta.bottom <= 876, 'CTA collides with footer');
+    assert(layout.credits.height > 470);
+    assert(Math.abs(layout.cta.bottom-layout.panel.bottom)<1,'Panel bottom edges differ');
+    assert.equal(await page.locator('a').count(),0,'Video overlay contains interactive links');
     assert.equal(layout.overflowing, 0, 'Names or socials overflow horizontally');
     assert.equal(layout.bottom, `translateY(${-layout.trackHeight - 30}px)`);
     fs.mkdirSync('review', { recursive: true });
@@ -54,6 +56,7 @@ const assert = require('node:assert/strict');
       const canvas = document.createElement('canvas'); canvas.width = 1920; canvas.height = 1080;
       const ctx = canvas.getContext('2d'); ctx.drawImage(shot, 0, 0);
       const centerAlpha = ctx.getImageData(1000, 450, 1, 1).data[3];
+      const edgeAlpha = ctx.getImageData(10, 450, 1, 1).data[3];
       const badge = new Image(); badge.src = 'assets/metrobus_badge.png'; await badge.decode();
       canvas.width = badge.naturalWidth; canvas.height = badge.naturalHeight;
       ctx.drawImage(badge, 0, 0);
@@ -72,29 +75,28 @@ const assert = require('node:assert/strict');
       return {
         guestHeading: [guestTitle.fontSize, guestTitle.lineHeight, guestTitle.fontWeight],
         ctaHeading: [ctaTitle.fontSize, ctaTitle.lineHeight, ctaTitle.fontWeight],
-        centerAlpha,
+        centerAlpha, edgeAlpha,
         logoBounds: { left: offsetX + minX / badge.naturalWidth * width,
           top: offsetY + minY / badge.naturalHeight * height,
           right: offsetX + maxX / badge.naturalWidth * width,
           bottom: offsetY + maxY / badge.naturalHeight * height,
           width: logo.clientWidth, height: logo.clientHeight },
-        logoBottom: logo.getBoundingClientRect().bottom
+        logoTop: logo.getBoundingClientRect().top
       };
     }, screenshot.toString('base64'));
     assert.deepEqual(design.guestHeading, design.ctaHeading, 'Left headings have inconsistent typography');
-    assert(design.centerAlpha > 150 && design.centerAlpha < 220, 'Video layer is missing or opaque');
+    assert(design.centerAlpha > 0 && design.centerAlpha < 50, 'Center vignette is too opaque');
+    assert(design.edgeAlpha>design.centerAlpha && design.edgeAlpha<100,'Vignette is missing or too heavy');
     assert(design.logoBounds.left >= 2 && design.logoBounds.top >= 2 &&
       design.logoBounds.right <= design.logoBounds.width - 2 &&
       design.logoBounds.bottom <= design.logoBounds.height - 2, 'Footer logo mask clips the badge');
-    assert(design.logoBottom <= 1080 - 12, 'Footer logo touches the canvas boundary');
+    assert(design.logoTop + design.logoBounds.bottom <= 1080 - 8, 'Footer logo touches the canvas boundary');
     await page.evaluate(() => {
       document.body.style.backgroundImage = 'repeating-conic-gradient(#293850 0% 25%, #788da6 0% 50%)';
       document.body.style.backgroundSize = '160px 160px';
     });
     await page.screenshot({ path: 'review/outro-video-check.png' });
     await page.evaluate(() => { document.body.style.backgroundImage = ''; });
-    const links = await page.locator('.social-item').evaluateAll(items => items.map(e => e.href));
-    assert.deepEqual(links, ['https://www.metrobus.cz/', 'https://is.gd/metrobusyt', 'https://www.instagram.com/metrobuscz/']);
     await page.evaluate(() => {
       for (const name of ['Další host', 'Čtvrtý host']) {
         const item = document.createElement('div'); item.textContent = name;

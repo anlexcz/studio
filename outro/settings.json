@@ -1,0 +1,55 @@
+{
+  "titleTop": "METROBUS",
+  "titleBottom": "Pokec",
+  "guestsTitle": "V tomto díle vystoupili",
+  "guests": [
+    "Jiří Trsek",
+    "Honza Škopek"
+  ],
+  "socialsTitle": "Zůstaň na spoji.",
+  "socials": [
+    {
+      "icon": "web",
+      "label": "Web",
+      "value": "metrobus.cz",
+      "href": "https://www.metrobus.cz"
+    },
+    {
+      "icon": "youtube",
+      "label": "YouTube",
+      "value": "Metrobus",
+      "href": "https://is.gd/metrobusyt"
+    },
+    {
+      "icon": "instagram",
+      "label": "Instagram",
+      "value": "@metrobuscz",
+      "href": "https://www.instagram.com/metrobuscz/"
+    }
+  ],
+  "ctaLeadTitle": "Tohle není konečná!",
+  "forendorsTitle": "Forendors",
+  "forendorsText": "Celý Pokec bez střihů a další díly na Forendors.",
+  "forendorsLink": "forendors.cz/metrobuscz",
+  "forendorsUrl": "https://forendors.cz/metrobuscz",
+  "supportersTitle": "Díky vám jedeme dál.",
+  "supportersSubtitle": "Podporovatelé Metrobusu na Forendors",
+  "supportersThanks": "Děkujeme za vaši podporu.",
+  "footer": "Vyrobil Metrobus ve svém studiu · 2026",
+  "easterEgg": "",
+  "supportersJson": "supporters.json",
+  "easterEggCsv": "easteregg.csv",
+  "easterEggRotateMs": 15000,
+  "easterEggStartDelayMs": 9000,
+  "supportersSpeedPxPerSec": 42,
+  "creditsEndPauseMs": 3500,
+  "easterEggs": [
+    "Toto outro obsahuje náhradní autobusovou dopravu.",
+    "Žádný T3R.P nebyl při výrobě tohoto overlaye poškozen.",
+    "Pokud to čteš celé, asi jsi dost dopravní člověk.",
+    "Tento pořad jezdí bez odklonu jen výjimečně.",
+    "Předplatné je levnější než náhodný výlet do Polska.",
+    "Metrobus děkuje i nočním sovám."
+  ],
+  "schemaVersion": 1
+}
