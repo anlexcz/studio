@@ -129,6 +129,11 @@ const assert = require('node:assert/strict');
     await preview.waitForFunction(() => document.querySelector('#easterEgg').classList.contains('is-visible'));
     await preview.waitForTimeout(450);
     assert(await preview.evaluate(() => getComputedStyle(document.body).backgroundImage.includes('preview-photo.webp')));
+    const photoWidth = await preview.evaluate(async () => {
+      const photo = new Image(); photo.src = 'assets/preview-photo.webp';
+      await photo.decode(); return photo.naturalWidth;
+    });
+    assert(photoWidth >= 1000, 'Preview photo did not load');
     const footerAlignment = await preview.evaluate(() => {
       const a = document.querySelector('#footer').getBoundingClientRect();
       const b = document.querySelector('#easterEgg').getBoundingClientRect();
