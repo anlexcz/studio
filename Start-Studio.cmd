@@ -6,6 +6,5 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-start "" "http://127.0.0.1:8787/control/"
-node scripts/studio-server.cjs
+node scripts/studio-server.cjs --open
 pause

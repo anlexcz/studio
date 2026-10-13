@@ -11,6 +11,13 @@
   }
 
   if (params.get("studio") === "1") {
+    const loadScript = src => new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src; script.onload = resolve; script.onerror = reject;
+      document.body.appendChild(script);
+    });
+    await loadScript("../shared/model.js");
+    await loadScript("../shared/transport.js");
     await Studio.ready;
     const live = Studio.state.outro.settings || Studio.state.config.outro;
     cfg = { ...cfg, titleBottom: live.titleBottom, guests: live.guests.split("\n").map(s => s.trim()).filter(Boolean) };
