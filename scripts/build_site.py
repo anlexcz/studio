@@ -58,7 +58,7 @@ def build(root=ROOT):
     if (root / 'chat').is_dir():
         shutil.copytree(root / 'chat', output / 'chat',
                         ignore=shutil.ignore_patterns('README.md'))
-    for folder in ('control', 'shared', 'info', 'countdown'):
+    for folder in ('control', 'shared', 'info', 'countdown', 'service'):
         shutil.copytree(root / folder, output / folder)
     for name in ('index.html', 'STUDIO.md'):
         shutil.copy2(root / name, output / name)
